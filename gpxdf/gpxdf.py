@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# coding: utf-8
 from datetime import timedelta
 import gpxpy
 import pandas as pd
@@ -27,6 +25,7 @@ def read_gpx(filename):
     colname = ['latitude', 'longitude',
                'elevation', 'time', 'trackname', 'segment_no']
     df = pd.DataFrame(gpx_list, columns=colname)
+    df['time'] = pd.to_datetime(df['time'], utc=True) # UTC
 
     # Adjust trackname
     if df.trackname.isnull().all():
@@ -136,7 +135,7 @@ def fit_to_gpx_df(df_fit):
     df['latitude'] = df_fit['position_lat']*180/(2**31)
     df['longitude'] = df_fit['position_long']*180/(2**31)
     df['elevation'] = df_fit['enhanced_altitude']
-    df['time'] = df_fit['timestamp']  # UTC
+    df['time'] = pd.to_datetime(df_fit['timestamp'], utc=True) # UTC
     df['trackname'] = df_fit['trackname']
     df['diff_time'] = df_fit['timestamp'].diff()
     df['distance'] = distance_df(df[['latitude', 'longitude']])
@@ -146,10 +145,9 @@ def fit_to_gpx_df(df_fit):
 
 def gpx_sammary(df, cut_velocity=1):
     dic_ = {}
-    dic_['trackname'] = df['trackname'][0]
+    dic_['trackname'] = df['trackname'].unique()[0]
     dic_['total_distance'] = df['distance'].sum()/1000
-    dic_['moving_time'] = df.query(
-        'velocity>=@cut_velocity')['diff_time'].sum()
+    dic_['moving_time'] = pd.to_datetime(df.query('velocity>=@cut_velocity')['time']).diff().sum()
     dic_['moving_hours'] = dic_['moving_time']/timedelta(hours=1)
     dic_['avg_velocity'] = dic_['total_distance'] / dic_['moving_hours']
     return dic_
