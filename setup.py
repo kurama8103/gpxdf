@@ -7,7 +7,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="gpxdf",  # Replace with your own username
-    version="0.0.1",
+    version="0.0.2",
     author="kurama8103",
     # author_email="author@example.com",
     description="gpx file to pandas dateframe",
