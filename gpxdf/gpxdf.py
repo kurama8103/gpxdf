@@ -80,7 +80,10 @@ def df_to_html_map(df, filename_html: str = None, zoom_start: int = 10):
     )
 
     i = 0
-    l = sorted(df["trackname"].unique(), key=lambda x: int(x.split("_")[-1]))
+    if df["trackname"].nunique() > 1:
+        l = sorted(df["trackname"].unique(), key=lambda x: int(x.split("_")[-1]))
+    else:
+        l=[df["trackname"].iloc[0]]
     for t in l:
         _d = df.query("trackname==@t")
         folium.PolyLine(_d[["latitude", "longitude"]].dropna(), tooltip=t).add_to(map_)
