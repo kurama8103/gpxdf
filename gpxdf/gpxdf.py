@@ -79,22 +79,10 @@ def df_to_html_map(df, filename_html: str = None, zoom_start: int = 10):
         zoom_start=zoom_start,
     )
 
-    i = 0
-    if df["trackname"].nunique() > 1:
-        try:
-            l = sorted(df["trackname"].unique(), key=lambda x: int(x.split("_")[-1]))
-        except ValueError:
-            l = [df["trackname"].iloc[0]]
-    else:
-        l = [df["trackname"].iloc[0]]
-    for t in l:
-        _d = df.query("trackname==@t")
+    for t, _d in df.groupby("trackname"):
         folium.PolyLine(_d[["latitude", "longitude"]].dropna(), tooltip=t).add_to(map_)
         cum = _d.iloc[-1].get("distance_from_start", 0)
         des = t + " " + str(int(cum // 1000)) + "km"
-        if df["trackname"].nunique() > 1:
-            des = des + " /interval: " + str(int((cum - i) // 1000)) + "km"
-            i = cum
         folium.Marker(
             location=_d[["latitude", "longitude"]].dropna().iloc[-1],
             popup=folium.Popup(des, parse_html=True),
