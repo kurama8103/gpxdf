@@ -19,8 +19,5 @@
 * 経路イメージ  
 `plt.plot(df.longitude, df.latitude)`
 
-* 経路をマップに表示するhtmlを作成(foliumライブラリ)  
-`gpxdf.to_html_map(df, 'map.html')`
-
-* dfをGPXファイルに変換  
-`gpxdf.to_gpx(df, 'out.gpx')`
+* 経路をマップに表示するhtmlを作成(foliumライブラリ使用)  
+`gpxdf.df_to_html_map(df, 'map.html')`

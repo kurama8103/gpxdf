@@ -5,7 +5,8 @@ import fitparse
 import gpxpy
 from geopy import distance
 import numpy as np
-
+import warnings
+warnings.simplefilter('ignore', FutureWarning)
 
 def read_fit(fit_file_path: str):
     fitfile = fitparse.FitFile(fit_file_path)
